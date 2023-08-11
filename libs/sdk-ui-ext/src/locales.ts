@@ -206,6 +206,11 @@ export const messages: Record<string, MessageDescriptor> = defineMessages({
     columnHeaderPositionLabel: { id: "properties.column.headers.position" },
     columnHeaderPositionTop: { id: "properties.column.headers.position.top" },
     columnHeaderPositionLeft: { id: "properties.column.headers.position.left" },
+    comparisonTitle: { id: "properties.comparison.title" },
+    comparisonCalculationTypeTitle: { id: "properties.comparison.calculationType.title" },
+    comparisonCalculatedAsChange: { id: "properties.comparison.calculationType.as.change" },
+    comparisonCalculatedAsRatio: { id: "properties.comparison.calculationType.as.ratio" },
+    comparisonCalculatedAsDifference: { id: "properties.comparison.calculationType.as.difference" },
 });
 
 export const comparisonMessages: Record<string, MessageDescriptor> = defineMessages({

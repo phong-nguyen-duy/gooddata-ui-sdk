@@ -104,6 +104,12 @@ describe("measure factories", () => {
         it("should return a simple arithmetic measure from two measure objects", () => {
             expect(newArithmeticMeasure([Won, Velocity.Min], "sum")).toMatchSnapshot();
         });
+
+        it("should return a virtual arithmetic measure", () => {
+            expect(
+                newArithmeticMeasure(["foo", "bar"], "sum", (builder) => builder.asVirtual()),
+            ).toMatchSnapshot();
+        });
     });
 
     describe("newVirtualArithmeticMeasure", () => {

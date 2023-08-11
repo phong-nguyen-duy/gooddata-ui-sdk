@@ -147,6 +147,23 @@ exports[`measure factories > newArithmeticMeasure > should return a simple arith
 }
 `;
 
+exports[`measure factories > newArithmeticMeasure > should return a virtual arithmetic measure 1`] = `
+{
+  "measure": {
+    "definition": {
+      "arithmeticMeasure": {
+        "measureIdentifiers": [
+          "foo",
+          "bar",
+        ],
+        "operator": "sum",
+      },
+    },
+    "localIdentifier": "m_3858f62230ac3c915f300c664312c63f__virtual_arithmetic_measure",
+  },
+}
+`;
+
 exports[`measure factories > newInlineMeasure > should return a inline measure 1`] = `
 {
   "measure": {
