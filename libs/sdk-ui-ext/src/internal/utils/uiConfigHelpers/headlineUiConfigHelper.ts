@@ -138,15 +138,20 @@ export function isComparisonEnabled(insight: IInsightDefinition) {
     return primaryMeasure && secondaryMeasures?.length === 1;
 }
 
-function getDefaultComparisonProperties(insight: IInsightDefinition): IComparison {
-    const [secondaryMeasure] = insightSecondaryMeasures(insight);
-    const secondaryIsDerivedMeasure =
-        isPoPMeasure(secondaryMeasure) || isPreviousPeriodMeasure(secondaryMeasure);
-
-    return {
+export function getDefaultComparisonProperties(insight?: IInsightDefinition): IComparison {
+    const comparison: IComparison = {
         enabled: true,
-        calculationType: secondaryIsDerivedMeasure ? CalculationType.CHANGE : CalculationType.RATIO,
-    };
+    }
+
+    if (insight) {
+        const [secondaryMeasure] = insightSecondaryMeasures(insight);
+        const secondaryIsDerivedMeasure =
+            isPoPMeasure(secondaryMeasure) || isPreviousPeriodMeasure(secondaryMeasure);
+
+        comparison.calculationType = secondaryIsDerivedMeasure ? CalculationType.CHANGE : CalculationType.RATIO;
+    }
+
+    return comparison;
 }
 
 function insightPrimaryMeasure(insight: IInsightDefinition): IMeasure {

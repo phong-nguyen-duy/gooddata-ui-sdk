@@ -17,9 +17,12 @@ import {
     filtersInsightConversion,
     getInsightToPropsConverter,
     getReactEmbeddingCodeGenerator,
-    localeInsightConversion,
     singleMeasureBucketConversion,
+    localeInsightConversion,
+    insightConversion,
 } from "../../../utils/embeddingCodeGenerator/index.js";
+import { headlineConfigFromInsight} from "./headlineConfigFromInsight.js";
+import { singleSecondaryMeasureBucketConversion, multipleSecondaryMeasuresBucketConversion} from "./headlineBucketConversion.js";
 
 const hasSecondaryMeasure = (insight: IInsightDefinition) =>
     insight.insight.buckets.filter((bucket) => bucket.items.length > 0).length > 1;
@@ -74,22 +77,38 @@ export class HeadlineDescriptor implements IVisualizationDescriptor {
     }
 
     public getEmbeddingCode = getReactEmbeddingCodeGenerator({
-        component: {
-            importType: "named",
-            name: "Headline",
-            package: "@gooddata/sdk-ui-charts",
-        },
-        insightToProps: getInsightToPropsConverter<IHeadlineProps>({
-            primaryMeasure: singleMeasureBucketConversion("primaryMeasure", BucketNames.MEASURES),
-            secondaryMeasure: singleMeasureBucketConversion(
-                "secondaryMeasure",
-                BucketNames.SECONDARY_MEASURES,
-            ),
-            filters: filtersInsightConversion("filters"),
-            locale: localeInsightConversion("locale"),
-            execConfig: executionConfigInsightConversion("execConfig"),
-        }),
-    });
+            component: {
+                importType: "named",
+                name: "Headline",
+                package: "@gooddata/sdk-ui-charts",
+            },
+            insightToProps: getInsightToPropsConverter<IHeadlineProps>({
+                primaryMeasure: singleMeasureBucketConversion("primaryMeasure", BucketNames.MEASURES),
+                secondaryMeasures: multipleSecondaryMeasuresBucketConversion(
+                    "secondaryMeasures",
+                    BucketNames.SECONDARY_MEASURES,
+                ),
+                secondaryMeasure: singleSecondaryMeasureBucketConversion(
+                    "secondaryMeasure",
+                    BucketNames.SECONDARY_MEASURES,
+                ),
+                filters: filtersInsightConversion("filters"),
+                locale: localeInsightConversion("locale"),
+                execConfig: executionConfigInsightConversion("execConfig"),
+                config: insightConversion(
+                    "config",
+                    {
+                        typeImport: {
+                            importType: "named",
+                            name: "IChartConfig",
+                            package: "@gooddata/sdk-ui-charts",
+                        },
+                        cardinality: "scalar",
+                    },
+                    headlineConfigFromInsight,
+                )
+            }),
+        });
 
     public getMeta(): IVisualizationMeta {
         return {
