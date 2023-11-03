@@ -69,9 +69,52 @@ This article describes the options for configuring a chart.
     enableCompactSize: true, // boolean
     forceDisableDrillOnAxes: false, // boolean
     enableJoinedAttributeAxisName: false // boolean
+    comparison: {
+        enabled: true, // boolean
+        calculationType: "change", // "change" | "change_difference" | "ratio" | "difference"
+        colorConfig: {
+            disabled: false, // boolean
+            positive: {
+                type: "rgb", // "guid" | "rgb"
+                value: {
+                    r: 0,
+                    g: 193,
+                    b: 141
+                } 
+            },
+            negative: {
+                type: "rgb", // "guid" | "rgb"
+                value: {
+                    r: 229,
+                    g: 77,
+                    b: 64
+                }
+            },
+            equals: {
+                type: "rgb", // "guid" | "rgb"
+                value: {
+                    r: 148,
+                    g: 161,
+                    b: 173
+                }
+            }
+        },
+        format: "#,##0%", // string
+        isArrowEnabled: true, // boolean
+        position: "top", // "top" | "left" | "right" | "auto"
+        labelConfig: {
+            unconditionalValue: "Change" // string
+            isConditional: true, // boolean
+            positive: "Increase", // string
+            negative: "Decrease", // string
+            equals: "No change" // string
+        }
+    }
 }
 ```
-**NOTE:** `primaryChartType`, `secondaryChartType`, and `dualAxis` are available only for [combo charts](../combo_chart/).
+**NOTE:** 
+* `primaryChartType`, `secondaryChartType`, and `dualAxis` are available only for [combo charts](../combo_chart/).
+* `comparison` is available only for [headline charts](../headline/)
 
 ## Align a chart vertically
 
@@ -488,3 +531,126 @@ For configuring a responsive legend, see [Change legend properties](#change-lege
 ### Disabled drilling on axis labels
 
 To disable drilling on axis labels, set `config.forceDisableDrillOnAxes` to `true`.
+
+## Customize comparison
+
+* You can configure comparison for the following types of charts:
+  * [Headline charts](../headline/)
+
+### Change calculation type
+The following arithmetic operations are supported:
+
+| Operation           | Comparison operator | Expression formula | Example
+|---------------------|---------------------|--------------------|---
+| Change              | `change`            | =(A-B)÷B           | = (this month revenue - last month revenue) / last month revenue
+| Change (Difference) | `change_difference` | =(A-B)÷B and A-B   | = (this month revenue - last month revenue) / last month revenue and (this month revenue - last month revenue) <br/> **NOTE:** Combine 2 operators `change` and `difference`
+| Difference          | `difference`        | =A-B               | = revenue in 2017 - revenue in 2016
+| Ratio               | `ratio`             | =A÷B               | = gross profit / net sales
+
+* By default, the result data of a `change` and `ratio` operation is returned as a percentage in the `#,##0%` format
+To change the format, use the `format` property 
+
+```jsx
+import { InsightView } from "@gooddata/sdk-ui-ext";
+
+// Example of embedding a visualization with the enabled comparison and 
+<InsightView
+    insight=<InsightView-id>
+    config={
+        comparison: {
+            enabled: true,
+            calculationType: "change",
+            format: "#,##0.00%"
+        }
+    }
+/>
+```
+### Change position
+* You can change the position of the comparison value to `top`, `left`, `right` or `auto`, set the `comparison.position` property
+
+```jsx
+import { InsightView } from "@gooddata/sdk-ui-ext";
+
+// Example of embedding a visualization with the enabled comparison and 
+<InsightView
+    insight=<InsightView-id>
+    config={
+        comparison: {
+            enabled: true,
+            position: "top"
+        }
+    }
+/>
+```
+### Indicator growth
+You can use an arrow symbol or the color of the comparison value to represent as the growth indicator
+* To use an arrow symbol, set the `comparison.isArrowEnabled` to `true`
+* To use a color, set the `comparison.colorConfig.disabled` to `false` and specify the color for each condition `positive`, `negative` and `equals`
+
+```jsx
+import { InsightView } from "@gooddata/sdk-ui-ext";
+
+// Example of embedding a visualization with the enabled comparison and 
+<InsightView
+    insight=<InsightView-id>
+    config={
+        comparison: {
+            enabled: true,
+            isArrowEnabled: true,
+            colorConfig: {
+                disabled: false,
+                positive: {
+                    type: "rgb",
+                    value: {
+                        r: 0,
+                        g: 193,
+                        b: 141
+                    }
+                },
+                negative: {
+                    type: "rgb",
+                    value: {
+                        r: 229,
+                        g: 77,
+                        b: 64
+                    }
+                }
+                negative: {
+                    type: "rgb",
+                    value: {
+                        r: 148,
+                        g: 161,
+                        b: 173
+                    }
+                }
+            }
+        }
+    }
+/>
+```
+### Change label
+* To set the label based on the computed value, set `comparison.labelConfig.isConditional=true` and set label for `positive`, `negative` and `equals`
+  * `positive` label will be applied when primary value is greater than secondary value
+  * `negative` label will be applied when primary value is less than secondary value
+  * `equals` label will be applied when primary value is equal secondary value
+* To set the label of comparison value regardless the computed value , use `comparison.labelConfig.unconditionalValue`
+```jsx
+import { InsightView } from "@gooddata/sdk-ui-ext";
+
+// Example of embedding a visualization with the enabled comparison and 
+<InsightView
+    insight=<InsightView-id>
+    config={
+        comparison: {
+            enabled: true,
+            labelConfig: {
+                unconditionalValue: "Versus"
+                idConditional: true,
+                positive: "Increase",
+                negative: "Decrease",
+                equals: "No change"
+            }
+        }
+    }
+/>
+```
